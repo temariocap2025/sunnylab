@@ -2,12 +2,10 @@
 include("configuracion.php");
 $connect = new mysqli($server,$user,$pass,$db);
 if (mysqli_connect_errno()){
-    echo "La conexion a la BD **FALLO**",mysqli_connect_error();
+    die("La conexión falló: " . mysqli_connect_error());
     exit();
 }
 else{
-    echo "<script>
-            alert('Conexion exitosa');
-        </script>";
+    echo '<script>console.log("La conexión con la base de datos fué exitosa");</script>';
 }
 ?>
