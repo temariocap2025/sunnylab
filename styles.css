@@ -124,7 +124,7 @@ body {
     padding: 3rem;
     max-width: 800px;
     width: 100%;
-    position: absolute;
+    position: flex;
 }
 
 .panel-header {
@@ -146,24 +146,36 @@ body {
 }
 
 .current {
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(1px);
+    background: rgba(255, 255, 255, 0.8);
     border-radius: 2rem;
-    padding: 3rem;
-    max-width: 800px;
+    padding: 2%;
+    max-width: 1000px;
     width: 100%;
-    position: absolute;
-}
-
-.current-header {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 2rem;
+    position: flex;
 }
 
 .current-title {
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: bold;
-    color: #2563eb;
+    color: #0034a4;
+}
+
+.current-table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+.current-table th {
+    font-size: 2rem;
+    font-weight: normal;
+    color: #0034a4;
+    word-wrap: break-word;
+    border: 25px solid transparent;
+}
+
+.current-table td {
+    font-size: 1.5rem;
+    font-weight: normal;
+    color: #000000;
+    text-align: center;
 }
