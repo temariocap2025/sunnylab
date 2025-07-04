@@ -152,6 +152,8 @@ body {
     max-width: 1000px;
     width: 100%;
     position: flex;
+    display: block;
+    margin-bottom: 20px;
 }
 
 .current-title {
@@ -178,4 +180,19 @@ body {
     font-weight: normal;
     color: #000000;
     text-align: center;
+}
+
+.res-chart {
+    width: 100%;
+    display: block;
+    clear: both;
+    margin-top: 20px;
+}
+
+.chart-controls {
+    background-color: #000000;
+}
+
+.chart-controls label {
+    color: white;
 }
