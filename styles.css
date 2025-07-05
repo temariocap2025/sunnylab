@@ -196,3 +196,43 @@ body {
 .chart-controls label {
     color: white;
 }
+
+.advices-alumnos {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(1px);
+    border-radius: 2rem;
+    padding: 3rem;
+    max-width: 1000px;
+    width: 100%;
+    position: flex;
+}
+
+.advices-alumnos-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+}
+
+.advices-alumnos-icon {
+    font-size: 1.5rem;
+    color: #2563eb;
+}
+
+.advices-alumnos-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2563eb;
+}
+
+.instagram-media {
+    width: 320px !important;
+    min-width: 320px !important;
+    max-width: 320px !important;
+    flex: 0 0 auto !important;
+}
+.insta-container {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+}
