@@ -20,7 +20,7 @@ connection = pymysql.connect(
 chrome_options = Options()
 chrome_options.add_argument("--headless")
 chrome_options.add_argument("--disable-blink-features=AutomationControlled")
-service = Service("C:\\chromedriver.exe")
+service = Service("/usr/bin/chromedriver")
 driver = webdriver.Chrome(service=service, options=chrome_options)
 
 client = genai.Client(api_key='AIzaSyD4y3882Q0IZjitGCsxxVMafL4RtU8QNeM')
@@ -89,7 +89,7 @@ while True:
                 try:
                     subprocess.run(["gallery-dl", gallery_url])
                     video_filename = None
-                    for file in os.listdir(f".\\gallery-dl\\instagram\\{USER}\\"):
+                    for file in os.listdir(f"./gallery-dl/instagram/{USER}/"):
                         if file.endswith(".mp4"):
                             video_filename = file
                             break
@@ -97,7 +97,7 @@ while True:
                     print("Error running gallery-dl:")
                     print(e.stderr)
 
-                video_file_name = f'gallery-dl\\instagram\\{USER}\\{video_filename}'
+                video_file_name = f'gallery-dl/instagram/{USER}/{video_filename}'
                 video_bytes = open(video_file_name, 'rb').read()
 
                 response = client.models.generate_content(
@@ -107,7 +107,7 @@ while True:
                             types.Part(
                                 inline_data=types.Blob(data=video_bytes, mime_type='video/mp4')
                             ),
-                            types.Part(text='Respondeme únicamente un 0 o un 1, este comunicado habla sobre algún motivo ambiental (suspensión de clases o recomendaciones a un evento)?')
+                            types.Part(text='Respondeme unicamente un 0 o un 1, este comunicado habla sobre algun motivo ambiental (suspension de clases o recomendaciones a un evento)?')
                         ]
                     )
                 )
@@ -117,7 +117,7 @@ while True:
                 try:
                     subprocess.run(["gallery-dl", gallery_url])
                     image_filename = None
-                    for file in os.listdir(f".\\gallery-dl\\instagram\\{USER}\\"):
+                    for file in os.listdir(f"./gallery-dl/instagram/{USER}/"):
                         if file.endswith(".jpg"):
                             image_filename = file
                             break
@@ -125,7 +125,7 @@ while True:
                     print("Error running gallery-dl:")
                     print(e.stderr)
                 
-                image_path = f'gallery-dl\\instagram\\{USER}\\{image_filename}'
+                image_path = f'gallery-dl/instagram/{USER}/{image_filename}'
                 image_bytes = open(image_path, 'rb').read()
                 image = types.Part.from_bytes(
                     data=image_bytes, mime_type="image/jpeg"
@@ -134,30 +134,32 @@ while True:
                 response = client.models.generate_content(
                     model="models/gemini-2.0-flash",
                     contents=[
-                        'Respondeme únicamente un 0 o un 1, este comunicado habla sobre algún motivo ambiental (suspensión de clases o recomendaciones a un evento)?',
+                        'Respondeme unicamente un 0 o un 1, este comunicado habla sobre algun motivo ambiental (suspension de clases o recomendaciones a un evento)?',
                         image
                     ],
                 )
                 shutil.rmtree('gallery-dl')
 
-            if response.text == "1":
+            response_text = response.text.strip()
+            if response_text == "1":
                 isMedia = True
-            elif response.text == "0":
+            elif response_text == "0":
                 isMedia = False
             else:
+                print(f"AI: {response_text}")
                 isMedia = None
 
-            print(f"{USER} - isMedia:", isMedia)
+            print(f"{post_id} - {USER} - isMedia:", isMedia)
 
             if isMedia == True:
                 with connection.cursor() as cursor:
-                    sql = "INSERT INTO instagram (post_id) VALUES (%s)"
-                    cursor.execute(sql, (post_id,))
+                    sql = "INSERT INTO instagram (post_id, notpost_id) VALUES (%s, %s)"
+                    cursor.execute(sql, (post_id, ''))
                     connection.commit()
             elif isMedia == False:
                 with connection.cursor() as cursor:
-                    sql = "INSERT INTO instagram (notpost_id) VALUES (%s)"
-                    cursor.execute(sql, (post_id,))
+                    sql = "INSERT INTO instagram (post_id, notpost_id) VALUES (%s, %s)"
+                    cursor.execute(sql, ('', post_id))
                     connection.commit()
 
             isMedia = None
