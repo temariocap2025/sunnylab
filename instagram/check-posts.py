@@ -11,7 +11,7 @@ import shutil
 import pymysql
 
 USERS = ["colegiocapouilliez", "mineducgt"]
-COOKIE = "75508383702:Mso88zNPDrxxZg:4:AYcj-w0JKKa9VgPRecZrWrBQkTESMxwnwt37L-LGIA"
+COOKIE = "75508383702:Mso88zNPDrxxZg:4:AYcj-w0JKKa9VgPRecZrWrBQkTESMxwnwt37L-LGIA" #rezar para que no se tenga que refrescar
 
 connection = pymysql.connect(
     host="localhost", port=3306, user="temario", passwd="temario", database="db_solmaforo"
@@ -25,6 +25,7 @@ driver = webdriver.Chrome(service=service, options=chrome_options)
 
 client = genai.Client(api_key='AIzaSyD4y3882Q0IZjitGCsxxVMafL4RtU8QNeM')
 
+print(f"Monitoring: {USERS}")
 while True:
     for USER in USERS:
         driver.get(f"https://www.instagram.com/{USER}/")
@@ -84,6 +85,7 @@ while True:
                 result = cursor.fetchone()
 
         if not foundInTable:
+            print(f"NEW POST FROM {USER}")
             if ext == '.mp4':
                 gallery_url = f'https://www.instagram.com/reel/{post_id}/'
                 try:
@@ -149,7 +151,7 @@ while True:
                 print(f"AI: {response_text}")
                 isMedia = None
 
-            print(f"{post_id} - {USER} - isMedia:", isMedia)
+            print(f"https://www.instagram.com/p/{post_id}/ - {USER} - {isMedia}")
 
             if isMedia == True:
                 with connection.cursor() as cursor:
