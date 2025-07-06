@@ -13,7 +13,8 @@ import json
 import shutil
 import tempfile
 
-USERS = ["colegiocapouilliez", "mineducgt"]
+USERS = ["colegiocapouilliez", "mineducgt", "tn23noticias"]
+prompt = '(RESPONDE UNICAMENTE CON UN 1 O 0 YA QUE ES PARTE DE UN SCRIPT) este video o imagen habla sobre algun motivo ambiental de únicamente Guatemala? (si no es de Guatemala, es un 0) Como Radiación Uv, Calidad de aire, temperatura, humedad, suspención de clases por un evento o recomendaciones para los anteriores mencionados'
 
 connection = pymysql.connect(
     host="localhost", port=3306, user="temario", passwd="temario", database="db_solmaforo"
@@ -45,8 +46,8 @@ def chrome_refresh_cookie():
     shutil.copytree(
     '/home/temario/.config/chromium/Default',
     f'{temp_profile_dir}/Default',
-    ignore=shutil.ignore_patterns('*.lock'),  # ignore lock files (optional)
-    dirs_exist_ok=True,  # if destination exists
+    ignore=shutil.ignore_patterns('*.lock'),
+    dirs_exist_ok=True, 
     copy_function=shutil.copy2,
     ignore_dangling_symlinks=True)
 
@@ -222,7 +223,7 @@ while True:
                             types.Part(
                                 inline_data=types.Blob(data=video_bytes, mime_type='video/mp4')
                             ),
-                            types.Part(text='Respondeme unicamente un 0 o un 1, este comunicado habla sobre algun motivo ambiental (suspension de clases o recomendaciones a un evento)?')
+                            types.Part(text=prompt)
                         ]
                     )
                 )
@@ -249,7 +250,7 @@ while True:
                 response = client.models.generate_content(
                     model="models/gemini-2.0-flash",
                     contents=[
-                        'Respondeme unicamente un 0 o un 1, este comunicado habla sobre algun motivo ambiental (suspension de clases o recomendaciones a un evento)?',
+                        prompt,
                         image
                     ],
                 )
