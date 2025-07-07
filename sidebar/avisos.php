@@ -13,7 +13,4 @@ if ($result->num_rows > 0) {
 mysqli_close($connect);
 ?>
 <br>
-<div style="color:black; background-color:white">
-    En este espacio encontrará avisos importantes sobre el ambiente de parte del colegio, MINEDUC, o noticieros.
-</div>
 <script async src="//www.instagram.com/embed.js"></script>

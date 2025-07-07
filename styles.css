@@ -213,15 +213,17 @@ body {
 }
 
 .instagram-media {
-    width: 320px !important;
-    min-width: 320px !important;
-    max-width: 320px !important;
-    flex: 0 0 auto !important;
+    width: 480;
+    min-width: 480;
+    max-width: 480;
+    flex: 0 0 auto;
 }
 .insta-container {
     display: flex;
+    flex-direction: column;
     gap: 10px;
-    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 720px;
 }
 
 .login {
