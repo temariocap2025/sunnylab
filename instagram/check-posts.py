@@ -12,6 +12,7 @@ import pymysql
 import json
 import shutil
 import tempfile
+from datetime import datetime
 
 USERS = ["colegiocapouilliez", "mineducgt", "tn23noticias"]
 prompt = '(RESPONDE UNICAMENTE CON UN 1 O 0 YA QUE ES PARTE DE UN SCRIPT) este video o imagen habla sobre algun motivo ambiental de únicamente Guatemala? (si no es de Guatemala, es un 0) Como Radiación Uv, Calidad de aire, temperatura, humedad, suspención de clases por un evento o recomendaciones para los anteriores mencionados'
@@ -196,17 +197,17 @@ while True:
             if not foundInTable:
                 sql = "SELECT * FROM instagram WHERE post_id = %s"
                 cursor.execute(sql, (post_id,))
-                result = cursor.fetchone()
+                foundInTable = cursor.fetchone()
 
         if not foundInTable:
-            print(f"NEW POST FROM {USER}")
+            print(f"NEW POST FROM {USER} AT {datetime.now()}")
             if ext == '.mp4':
                 gallery_url = f'https://www.instagram.com/reel/{post_id}/'
                 try:
                     subprocess.run(["gallery-dl", gallery_url])
                     video_filename = None
                     for file in os.listdir(f"./gallery-dl/instagram/{USER}/"):
-                        if file.endswith(".mp4"):
+                        if file.endswith((".mp4", ".mov", ".avi", ".mkv", ".webm", ".flv")):
                             video_filename = file
                             break
                 except subprocess.CalledProcessError as e:
@@ -234,7 +235,7 @@ while True:
                     subprocess.run(["gallery-dl", gallery_url])
                     image_filename = None
                     for file in os.listdir(f"./gallery-dl/instagram/{USER}/"):
-                        if file.endswith(".jpg"):
+                        if file.lower().endswith((".jpg", ".jpeg", ".png", ".webp", ".bmp", ".gif")):
                             image_filename = file
                             break
                 except subprocess.CalledProcessError as e:
