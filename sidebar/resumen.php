@@ -1,4 +1,4 @@
-<div class="main-wrapper">
+<div class="summary-wrapper">
     <div class="current">
         <div class="current-header">
             <h2 class="current-title">Datos actuales</h2>
@@ -62,9 +62,7 @@
         <?php
             $dataType = isset($_GET['dataType']) ? $_GET['dataType'] : 'uv_index';
             $timeRange = isset($_GET['timeRange']) ? $_GET['timeRange'] : '12';
-            
-            $hoursBack = intval($timeRange);
-            
+
             switch ($dataType) {
                 case "uv_index":
                     $column = "uv_index";
@@ -72,7 +70,7 @@
                     break;
                 case "ica_index":
                     $column = "ica_index";
-                    $label = "Calidad Aire";
+                    $label = "Calidad de Aire";
                     break;
                 case "temperatura":
                     $column = "temperatura";
@@ -87,23 +85,28 @@
                     $label = "Radiación UV";
             }
 
+            $hoursBack = intval($timeRange);
             $sql = "SELECT DATE_FORMAT(registro_hora, '%H:%i') as hora, $column as valor 
                     FROM mediciones 
+                    WHERE registro_hora >= NOW() - INTERVAL $hoursBack HOUR
                     ORDER BY registro_hora ASC";
+            $result = mysqli_query($connect, $sql);
+            $labels = [];
+            $values = [];
 
-            $result = $connect->query($sql);
-
-            $data = [];
-            $data[] = ["Hora", $label];
-
-            while ($row = $result->fetch_assoc()) {
-                $data[] = [$row["hora"], floatval($row["valor"])];
+            while ($row = mysqli_fetch_assoc($result)) {
+                $labels[] = $row["hora"];
+                $values[] = floatval($row["valor"]);
             }
 
-            echo "<script>const serverData = " . json_encode($data) . ";</script>";
-        ?>          
+            echo "<script>
+                const chartLabels = " . json_encode($labels) . ";
+                const chartValues = " . json_encode($values) . ";
+                const chartLabel = " . json_encode($label) . ";
+            </script>";
+        ?>
         <div class="chart-controls">
-            <label for="dataType">Mostrar: </label>
+            <label for="dataType">Datos: </label>
             <select id="dataType">
                 <option value="uv_index" <?= $dataType == 'uv_index' ? 'selected' : '' ?>>Radiación UV</option>
                 <option value="ica_index" <?= $dataType == 'ica_index' ? 'selected' : '' ?>>Calidad del Aire</option>
@@ -120,46 +123,44 @@
             </select>
         </div>
 
-        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-        <script type="text/javascript">
-            google.charts.load("current", { packages: ["corechart"] });
-            google.charts.setOnLoadCallback(initChart);
-            const sampleData = serverData;
+        <canvas id="myChart" width="600" height="400"></canvas>
 
-            function initChart() {
-                document.getElementById("dataType").addEventListener("change", function() {
-                    window.location.href = "?seccion=resumen" + "&dataType=" + this.value + "&timeRange=" + document.getElementById("timeRange").value;
-                });
-                document.getElementById("timeRange").addEventListener("change", function() {
-                    window.location.href = "?seccion=resumen" + "&dataType=" + document.getElementById("dataType").value + "&timeRange=" + this.value;
-                });
-                
-                document.getElementById("dataType").addEventListener("change", drawChart);
-                document.getElementById("timeRange").addEventListener("change", drawChart);
-                drawChart();
-            }
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            document.getElementById("dataType").addEventListener("change", function() {
+                window.location.href = "?seccion=resumen" + "&dataType=" + this.value + "&timeRange=" + document.getElementById("timeRange").value;
+            });
+            document.getElementById("timeRange").addEventListener("change", function() {
+                window.location.href = "?seccion=resumen" + "&dataType=" + document.getElementById("dataType").value + "&timeRange=" + this.value;
+            });
 
-            function drawChart() {
-                const chartData = google.visualization.arrayToDataTable(sampleData);
+            const ctx = document.getElementById('myChart').getContext('2d');
 
-                const options = {
-                    title: "Datos desde la base",
-                    width: 600,
-                    height: 400,
-                    legend: { position: "none" },
-                    bar: { groupWidth: "90%" },
-                    hAxis: { title: 'Hora' },
-                    vAxis: { title: 'Valor' }
-                };
-
-                const chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values"));
-                chart.draw(chartData, options);
-            }
-
+            const myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartLabels,
+                    datasets: [{
+                        label: chartLabel,
+                        data: chartValues,
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Hora' }
+                        },
+                        y: {
+                            title: { display: true, text: 'Valor' },
+                            beginAtZero: true
+                        }
+                    },
+                },
+            });
         </script>
-        <div id="columnchart_values"></div>
     </div>
-
-</div>
-
 <?php mysqli_close($connect); ?>
+</div>

@@ -5,21 +5,24 @@ include("conexion.php")
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <title>Solmáforo Colegio Capouilliez</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <header class="header">
+            <button  class="open-sidebar" onclick="openNav()">&#9776;</button>
             <div class="main-logo">
                 <h1 class="main-title">Solmáforo</h1>
                 <p class="main-subtitle">Colegio Capouilliez</p>
             </div>
+            <a class="login" href="login.php"><img class="capo-logo" src="logo.png"></a>
         </header>
 
         <div class="main-layout">
-            <nav class="sidebar">
+            <nav id="mobile-sidebar" class="sidebar">
+                <a href="javascript:void(0)" class="close-sidebar" onclick="closeNav()">X</a>    
                 <ul class="nav-menu">
                     <li><a href="?seccion=inicio" class="nav-item <?php echo (!isset($_GET['seccion']) || $_GET['seccion'] == 'inicio') ? 'active' : ''; ?>">
                         <span class="nav-icon">🏠</span>
@@ -68,6 +71,10 @@ include("conexion.php")
                 ?>
             </main>
         </div>
+    <script>
+        function openNav() {document.getElementById("mobile-sidebar").style.width = "100%"}
+        function closeNav() {document.getElementById("mobile-sidebar").style.width = "0"}
+    </script>
     </div>
 </body>
 </html>

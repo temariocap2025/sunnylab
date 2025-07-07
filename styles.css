@@ -70,18 +70,6 @@ body {
     padding: 2rem;
 }
 
-.sidebar {
-    width: 250px;
-    flex-shrink: 0;
-}
-
-.nav-menu {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
 .nav-item {
     display: flex;
     align-items: center;
@@ -187,14 +175,13 @@ body {
     display: block;
     clear: both;
     margin-top: 20px;
+    background: white;
 }
 
 .chart-controls {
-    background-color: #000000;
-}
-
-.chart-controls label {
-    color: white;
+    height: fit-content;
+    width: fit-content;
+    margin: 0 auto;
 }
 
 .advices-alumnos {
@@ -235,4 +222,147 @@ body {
     display: flex;
     gap: 10px;
     overflow-x: auto;
+}
+
+.login {
+    height: 4rem;
+    width: 4rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background:transparent;
+    border:none
+    }
+
+.capo-logo{
+    overflow:auto; 
+    display: block;
+    margin: auto;
+}
+
+@media all and (min-width:1000px){
+    .sidebar {
+    width: 250px;
+    flex-shrink: 0;
+    }
+
+    .nav-menu {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    }
+
+    .close-sidebar{
+        display:none;
+    }
+
+    .open-sidebar{
+        display:none;
+    }
+
+}
+
+@media all and (max-width: 1000px) {
+    .sidebar {
+        height: 100%;
+        width: 0;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        background-color: rgb(0,0,0);
+        background-color: rgba(0,0,0, 0.2);
+        overflow-x: hidden;
+        transition: 0.5s;
+    }
+
+    .nav-menu {
+        position: relative;
+        top: 25%;
+        width: 100%;
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .sidebar a {
+    padding: 8px;
+    text-decoration: none;
+    font-size: 36px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+    }
+
+    .current {
+        padding: 4%;
+        width: 120%;
+        position: relative;
+        transform: scale(0.8);
+        transform-origin: left;
+        right:20px;
+    }
+    
+    .current-table th {
+        font-size: 1rem;
+        border: 15px solid transparent;
+    }
+
+    .current-table td {
+        font-size: 1rem;
+    }
+
+
+    .main-title {
+        font-size: 2rem;
+        position: relative;
+        left:60px;
+    }
+
+    .main-subtitle {
+        font-size: 1rem;
+        position: relative;
+        left:60px;
+    }
+    
+
+    .open-sidebar {
+        position: fixed;
+        left: 20px;
+        background: #dc2626;
+        color:white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        font-size:30px;
+    }
+
+    .panel {
+        border-radius: 2rem;
+        padding: 3rem;
+    }
+
+    .panel-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 2rem;
+    }
+
+    .panel-icon {
+        font-size: 1.5rem;
+        color: #2563eb;
+    }
+
+    .panel-title {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #2563eb;
+    }
+
+    .res-chart {
+        display:none;
+    }
 }
