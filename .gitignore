@@ -1,2 +1,3 @@
-instagram/venv
-instagram/gallery-dl
+python/venv
+python/gallery-dl
+python/__pycache__

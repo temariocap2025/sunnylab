@@ -243,6 +243,11 @@ body {
     margin: auto;
 }
 
+.scratch-embed{
+    border-radius: 10px;
+    overflow:hidden;
+}
+
 @media all and (min-width:1000px){
     .sidebar {
     width: 250px;
