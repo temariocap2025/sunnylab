@@ -1,12 +1,12 @@
 <?php
-include("conexion.php")
+include("conexion.php");
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <title>Solmáforo Colegio Capouilliez</title>
+    <title>SunnyLab Temario de Tecnología Capouilliez</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -14,8 +14,8 @@ include("conexion.php")
         <header class="header">
             <button  class="open-sidebar" onclick="openNav()">&#9776;</button>
             <div class="main-logo">
-                <h1 class="main-title">Solmáforo</h1>
-                <p class="main-subtitle">Colegio Capouilliez</p>
+                <h1 class="main-title">SunnyLab</h1>
+                <p class="main-subtitle">Temario de Tecnología Capouilliez Capouilliez</p>
             </div>
             <a class="login" href="login.php"><img class="capo-logo" src="logo.png"></a>
         </header>
