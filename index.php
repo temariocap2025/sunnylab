@@ -8,14 +8,18 @@ include("conexion.php");
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <title>SunnyLab Temario de Tecnología Capouilliez</title>
     <link rel="stylesheet" href="styles.css">
+    <?php if (isset($_GET['seccion']) && $_GET['seccion'] === 'resumen'): ?>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <?php endif; ?>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body>
-    <div class="container">
-        <header class="header">
+<body oncontextmenu="return false">
+    <div class="main-container">
+        <header class="main-header">
             <button  class="open-sidebar" onclick="openNav()">&#9776;</button>
             <div class="main-logo">
                 <h1 class="main-title">SunnyLab</h1>
-                <p class="main-subtitle">Temario de Tecnología Capouilliez Capouilliez</p>
+                <p class="main-subtitle">Temario de Tecnología Capouilliez 2025</p>
             </div>
             <a class="login" href="login.php"><img class="capo-logo" src="logo.png"></a>
         </header>
@@ -44,37 +48,34 @@ include("conexion.php");
                         <span class="nav-icon">🔔</span>
                         Avisos
                     </a></li>
+                    <?php if(isset($_COOKIE['loggedin'])){?>
+                    <li><a href="?seccion=test" class="nav-item <?php echo (isset($_GET['seccion']) && $_GET['seccion'] == 'test') ? 'active' : ''; ?>">
+                        TEST
+                    </a></li>
+                    <?php }?>
                 </ul>
             </nav>
 
             <main class="content">
                 <?php
                 $seccion = isset($_GET['seccion']) ? $_GET['seccion'] : 'inicio';
-                
-                switch($seccion) {     
-                    case 'resumen':
-                        include 'sidebar/resumen.php';
-                        break;
-                    case 'calendario':
-                        include 'sidebar/calendario.php';
-                        break;
-                    case 'recomendaciones':
-                        include 'sidebar/recomendaciones.php';
-                        break;
-                    case 'avisos':
-                        include 'sidebar/avisos.php';
-                        break;
-                    default:
-                        include 'sidebar/inicio.php';
-                        break;
-                }
+                include "sidebar/$seccion.php";
                 ?>
             </main>
         </div>
     <script>
         function openNav() {document.getElementById("mobile-sidebar").style.width = "100%"}
-        function closeNav() {document.getElementById("mobile-sidebar").style.width = "0"}
+        function closeNav() {document.getElementById("mobile-sidebar").style.width = "0"}        
     </script>
-    </div>
+    <!-- <script 
+    disable-devtool-auto 
+    disable-menu='false'
+    src='https://cdn.jsdelivr.net/npm/disable-devtool'></script>
+    </div> -->
+    <script>
+        setInterval(function() {
+        location.reload();
+    }, 60000);
+    </script>
 </body>
 </html>

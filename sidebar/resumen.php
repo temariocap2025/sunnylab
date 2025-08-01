@@ -1,166 +1,184 @@
-<div class="summary-wrapper">
-    <div class="current">
-        <div class="current-header">
-            <h2 class="current-title">Datos actuales</h2>
-        </div>
-        
-        <div class="current-table">
-            <?php
-                $sql = "SELECT uv_index, ica_index, temperatura, humedad FROM mediciones ORDER BY id_medicion DESC LIMIT 1";
-                $result = mysqli_query($connect, $sql);
-                $data = mysqli_fetch_assoc($result);
-                mysqli_free_result($result);
+<div class="container-fluid dashboard-container">
+    <h1 class="section-title" style="color:#333">
+        <i class="fas fa-leaf me-3"></i>
+        Panel de Monitoreo Ambiental
+    </h1>
+    
+    <?php
+        include("conexion.php");
+        $sql = "SELECT uv_index, ica_index, temperatura, humedad, presion, co2, co, no2, o3, covs, pm1_0, pm2_5, pm10, registro_hora 
+                FROM mediciones ORDER BY id_medicion DESC LIMIT 1";
+        $result = mysqli_query($connect, $sql);
+        $data = mysqli_fetch_assoc($result);
+        mysqli_free_result($result);
 
-                $uv_index = $data['uv_index'];
-                $ica_index = $data['ica_index'];
-                $temperatura = $data['temperatura'];
-                $humedad = $data['humedad'];
+        $uv_index = $data['uv_index'] ?? 0;
+        $ica_index = $data['ica_index'] ?? 0;
+        $temperatura = $data['temperatura'] ?? 0;
+        $humedad = $data['humedad'] ?? 0;
+        $presion = $data['presion'] ?? 0;
+        $co2 = $data['co2'] ?? 0;
+        $co = $data['co'] ?? 0;
+        $no2 = $data['no2'] ?? 0;
+        $o3 = $data['o3'] ?? 0;
+        $covs = $data['covs'] ?? 0;
+        $pm1_0 = $data['pm1_0'] ?? 0;
+        $pm2_5 = $data['pm2_5'] ?? 0;
+        $pm10 = $data['pm10'] ?? 0;
+        $last_update = $data['registro_hora'] ?? '';
 
-                function getUVLevel($uv) {
-                    if ($uv < 3) return "Bajo ($uv)";
-                    elseif ($uv < 6) return "Moderado ($uv)";
-                    elseif ($uv < 8) return "Alto ($uv)";
-                    elseif ($uv < 11) return "Muy Alto ($uv)";
-                    else return "Extremo ($uv)";
-                }
+        function getUVLevel($uv) {
+            if ($uv < 3) return ["Bajo", "uv-low", "fas fa-sun"];
+            elseif ($uv < 6) return ["Moderado", "uv-moderate", "fas fa-sun"];
+            elseif ($uv < 8) return ["Alto", "uv-high", "fas fa-sun"];
+            elseif ($uv < 11) return ["Muy Alto", "uv-very-high", "fas fa-exclamation-triangle"];
+            else return ["Extremo", "uv-extreme", "fas fa-exclamation-triangle"];
+        }
 
-                function getICALevel($ica) {
-                    if ($ica <= 50) return "Buena (ICA $ica)";
-                    elseif ($ica <= 100) return "Moderada (ICA $ica)";
-                    elseif ($ica <= 150) return "Poco saludable (ICA $ica)";
-                    elseif ($ica <= 200) return "Dañina (ICA $ica)";
-                    elseif ($ica <= 300) return "Muy Dañina (ICA $ica)";
-                    else return "Peligrosa (ICA $ica)";
-                }   
-            ?>
-            <table>
-                <tr>
-                    <th>Radiación UV</th>
-                    <th>Calidad de aire</th>
-                    <th>Temperatura</th>
-                    <th>Humedad</th>
-                </tr>
-                <tr>
-                    <td><?php echo getUVLevel($uv_index); ?></td>
-                    <td><?php echo getICALevel($ica_index); ?></td>
-                    <td><?php echo $temperatura . " °C"; ?></td>
-                    <td><?php echo $humedad . " %"; ?></td>
-                </tr>
-            </table>
-        </div>
+        function getICALevel($ica) {
+            if ($ica <= 50) return ["Buena", "aqi-good", "fas fa-leaf"];
+            elseif ($ica <= 100) return ["Moderada", "aqi-moderate", "fas fa-cloud"];
+            elseif ($ica <= 150) return ["Poco saludable", "aqi-unhealthy-sensitive", "fas fa-exclamation"];
+            elseif ($ica <= 200) return ["Dañina", "aqi-unhealthy", "fas fa-exclamation-triangle"];
+            elseif ($ica <= 300) return ["Muy Dañina", "aqi-very-unhealthy", "fas fa-skull"];
+            else return ["Peligrosa", "aqi-hazardous", "fas fa-skull-crossbones"];
+        }
 
-        <?php
-            $sql = "SELECT registro_hora FROM mediciones ORDER BY id_medicion DESC LIMIT 1";
-            $result = mysqli_query($connect, $sql);
-            $last_time = mysqli_fetch_assoc($result);
-            mysqli_free_result($result);
-            echo "<br> Última actualización: " . $last_time["registro_hora"];
-        ?>
-    </div>
+        function getPressureStatus($pressure) {
+            if ($pressure < 1000) return ["Baja", "text-info", "fas fa-arrow-down"];
+            elseif ($pressure > 1020) return ["Alta", "text-warning", "fas fa-arrow-up"];
+            else return ["Normal", "text-success", "fas fa-equals"];
+        }
 
-    <div class="res-chart">
-        <?php
-            $dataType = isset($_GET['dataType']) ? $_GET['dataType'] : 'uv_index';
-            $timeRange = isset($_GET['timeRange']) ? $_GET['timeRange'] : '12';
+        $uvData = getUVLevel($uv_index);
+        $icaData = getICALevel($ica_index);
+        $pressureData = getPressureStatus($presion);
 
-            switch ($dataType) {
-                case "uv_index":
-                    $column = "uv_index";
-                    $label = "Radiación UV";
-                    break;
-                case "ica_index":
-                    $column = "ica_index";
-                    $label = "Calidad de Aire";
-                    break;
-                case "temperatura":
-                    $column = "temperatura";
-                    $label = "Temperatura";
-                    break;
-                case "humedad":
-                    $column = "humedad";
-                    $label = "Humedad";
-                    break;
-                default:
-                    $column = "uv_index";
-                    $label = "Radiación UV";
-            }
-
-            $hoursBack = intval($timeRange);
-            $sql = "SELECT DATE_FORMAT(registro_hora, '%H:%i') as hora, $column as valor 
+        function getChartData($connect, $parameter) {
+            $sql = "SELECT DATE_FORMAT(registro_hora, '%H:%i') as hora, $parameter as valor 
                     FROM mediciones 
-                    WHERE registro_hora >= NOW() - INTERVAL $hoursBack HOUR
+                    WHERE registro_hora >= NOW() - INTERVAL 720 HOUR
                     ORDER BY registro_hora ASC";
             $result = mysqli_query($connect, $sql);
-            $labels = [];
-            $values = [];
-
+            $data = [];
             while ($row = mysqli_fetch_assoc($result)) {
-                $labels[] = $row["hora"];
-                $values[] = floatval($row["valor"]);
+                $data[] = floatval($row["valor"]);
             }
+            return $data;
+        }
 
-            echo "<script>
-                const chartLabels = " . json_encode($labels) . ";
-                const chartValues = " . json_encode($values) . ";
-                const chartLabel = " . json_encode($label) . ";
-            </script>";
-        ?>
-        <div class="chart-controls">
-            <label for="dataType">Datos: </label>
-            <select id="dataType">
-                <option value="uv_index" <?= $dataType == 'uv_index' ? 'selected' : '' ?>>Radiación UV</option>
-                <option value="ica_index" <?= $dataType == 'ica_index' ? 'selected' : '' ?>>Calidad del Aire</option>
-                <option value="temperatura" <?= $dataType == 'temperatura' ? 'selected' : '' ?>>Temperatura</option>
-                <option value="humedad" <?= $dataType == 'humedad' ? 'selected' : '' ?>>Humedad</option>
-            </select>
+        $chartData = [
+            'uv_index' => getChartData($connect, 'uv_index'),
+            'ica_index' => getChartData($connect, 'ica_index'),
+            'temperatura' => getChartData($connect, 'temperatura'),
+            'humedad' => getChartData($connect, 'humedad'),
+            'presion' => getChartData($connect, 'presion'),
+            'co2' => getChartData($connect, 'co2'),
+            'co' => getChartData($connect, 'co'),
+            'no2' => getChartData($connect, 'no2'),
+            'o3' => getChartData($connect, 'o3'),
+            'covs' => getChartData($connect, 'covs'),
+            'pm1_0' => getChartData($connect, 'pm1_0'),
+            'pm2_5' => getChartData($connect, 'pm2_5'),
+            'pm10' => getChartData($connect, 'pm10')
+        ];
+    ?>
 
-            <label for="timeRange">Rango de tiempo: </label>
-            <select id="timeRange">
-                <option value="12" <?= $timeRange == '12' ? 'selected' : '' ?>>Últimas 12 horas</option>
-                <option value="24" <?= $timeRange == '24' ? 'selected' : '' ?>>Últimas 24 horas</option>
-                <option value="168" <?= $timeRange == '168' ? 'selected' : '' ?>>Últimos 7 días</option>
-                <option value="720" <?= $timeRange == '720' ? 'selected' : '' ?>>Últimos 30 días</option>
-            </select>
+    <?php
+    $metrics = [
+        'uv_index' => ['Radiación UV', $uv_index, $uvData[2], $uvData[1], $uvData[0], '', 'chart-uv_index'],
+        'ica_index' => ['Calidad del Aire', $ica_index, $icaData[2], $icaData[1], $icaData[0], '', 'chart-ica_index'],
+        'temperatura' => ['Temperatura', $temperatura . '°C', 'fas fa-thermometer-half', 'text-danger', 'Actual', '', 'chart-temperatura'],
+        'humedad' => ['Humedad', $humedad . '%', 'fas fa-tint', 'text-primary', 'Relativa', '', 'chart-humedad'],
+        'presion' => ['Presión', $presion . ' hPa', $pressureData[2], $pressureData[1], $pressureData[0], '', 'chart-presion'],
+        'co2' => ['CO2', $co2 . ' ppm', 'fas fa-smog', 'text-secondary', 'Dióxido de Carbono', '', 'chart-co2'],
+        'co' => ['CO', $co . ' ppm', 'fas fa-cloud', 'text-dark', 'Monóxido de Carbono', '', 'chart-co'],
+        'no2' => ['NO2', $no2 . ' ppb', 'fas fa-wind', 'text-info', 'Dióxido de Nitrógeno', '', 'chart-no2'],
+        'o3' => ['O2', $o3 . ' ppb', 'fas fa-atom', 'text-success', 'Ozono', '', 'chart-o3'],
+        'covs' => ['COVs', $covs . ' ppb', 'fas fa-flask', 'text-warning', 'Compuestos Orgánicos', '', 'chart-covs'],
+        'pm1_0' => ['PM1.0', $pm1_0 . ' ug/m3', 'fas fa-circle', 'text-muted', 'Partículas Finas', '', 'chart-pm1_0'],
+        'pm2_5' => ['PM2.5', $pm2_5 . ' ug/m3', 'fas fa-dot-circle', 'text-danger', 'Partículas Respirables', '', 'chart-pm2_5'],
+        'pm10' => ['PM10', $pm10 . ' ug/m3', 'fas fa-circle-notch', 'text-primary', 'Partículas Inhalables', 'mx-auto', 'chart-pm10']
+    ];
+    ?>
+
+    <div class="row">
+    <?php foreach ($metrics as $key => [$label, $value, $icon, $color, $desc, $extraClass, $chartId]): ?>
+        <div class="col-lg-3 col-md-6 mb-4 <?php echo $extraClass; ?>">
+            <div class="card metric-card text-center h-100">
+                <div class="card-body">
+                    <i class="<?php echo "$icon metric-icon $color"; ?>"></i>
+                    <div class="metric-value <?php echo $color; ?>"><?php echo $value; ?></div>
+                    <div class="metric-label"><?php echo $label; ?></div>
+                    <span class="badge status-badge bg-light text-dark"><?php echo $desc; ?></span>
+                    <canvas class="mini-chart" id="<?php echo $chartId; ?>"></canvas>
+                </div>
+            </div>
         </div>
-
-        <canvas id="myChart" width="600" height="400"></canvas>
-
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script>
-            document.getElementById("dataType").addEventListener("change", function() {
-                window.location.href = "?seccion=resumen" + "&dataType=" + this.value + "&timeRange=" + document.getElementById("timeRange").value;
-            });
-            document.getElementById("timeRange").addEventListener("change", function() {
-                window.location.href = "?seccion=resumen" + "&dataType=" + document.getElementById("dataType").value + "&timeRange=" + this.value;
-            });
-
-            const ctx = document.getElementById('myChart').getContext('2d');
-
-            const myChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: chartLabels,
-                    datasets: [{
-                        label: chartLabel,
-                        data: chartValues,
-                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        x: {
-                            title: { display: true, text: 'Hora' }
-                        },
-                        y: {
-                            title: { display: true, text: 'Valor' },
-                            beginAtZero: true
-                        }
-                    },
-                },
-            });
-        </script>
+    <?php endforeach; ?>
     </div>
-<?php mysqli_close($connect); ?>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="last-update">
+                <i class="fas fa-clock me-2"></i>
+                <strong>Última actualización:</strong> <?php echo $last_update; ?>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const miniCharts = {};
+    const chartData = <?php echo json_encode($chartData); ?>;
+
+    function createMiniChart(canvasId, dataPoints, label) {
+        const ctx = document.getElementById(canvasId).getContext('2d');
+
+        if (miniCharts[canvasId]) {
+            miniCharts[canvasId].destroy();
+        }
+
+        miniCharts[canvasId] = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dataPoints.map((_, i) => i),
+                datasets: [{
+                    label: label,
+                    data: dataPoints,
+                    borderColor: '#4CAF50',
+                    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                    borderWidth: 1.5,
+                    tension: 0.4,
+                    pointRadius: 0,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { enabled: false }
+                },
+                scales: {
+                    x: { display: false },
+                    y: { display: false }
+                }
+            }
+        });
+    }
+
+    console.log(chartData);
+    Object.keys(chartData).forEach(param => {
+        const canvasId = 'chart-' + param;
+        if (document.getElementById(canvasId)) {
+            createMiniChart(canvasId, chartData[param], param);
+        }
+    });
+</script>
+
+<?php mysqli_close($connect); ?>
