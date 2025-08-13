@@ -57,7 +57,7 @@
         function getChartData($connect, $parameter) {
             $sql = "SELECT DATE_FORMAT(registro_hora, '%H:%i') as hora, $parameter as valor 
                     FROM mediciones 
-                    WHERE registro_hora >= NOW() - INTERVAL 720 HOUR
+                    WHERE registro_hora >= NOW() - INTERVAL 24 HOUR
                     ORDER BY registro_hora ASC";
             $result = mysqli_query($connect, $sql);
             $data = [];
@@ -122,19 +122,52 @@
         <div class="col-12">
             <div class="last-update">
                 <i class="fas fa-clock me-2"></i>
-                <strong>Última actualización:</strong> <?php echo $last_update; ?>
+                <strong>Última actualización:</strong> <?php echo $last_update; ?> <br>
+                <small>(Los datos mostrados en las gráficas son los últimos registrados en 24 horas)</small>
             </div>
         </div>
     </div>
 </div>
+
+<?php
+$colorMap = [
+    'text-danger' => '#dc3545',
+    'text-primary' => '#0d6efd',
+    'text-success' => '#198754',
+    'text-warning' => '#ffc107',
+    'text-info' => '#0dcaf0',
+    'text-secondary' => '#6c757d',
+    'text-dark' => '#212529',
+    'text-muted' => '#6c757d',
+
+    'uv-low' => '#4CAF50',
+    'uv-moderate' => '#FF9800',
+    'uv-high' => '#FF5722',
+    'uv-very-high' => '#E91E63',
+    'uv-extreme' => '#9C27B0',
+    'aqi-good' => '#4CAF50',
+    'aqi-moderate' => '#FFEB3B',
+    'aqi-unhealthy-sensitive' => '#FF9800',
+    'aqi-unhealthy' => '#FF5722',
+    'aqi-very-unhealthy' => '#9C27B0',
+    'aqi-hazardous' => '#8D6E63'
+];
+
+$chartColors = [];
+foreach ($metrics as $key => $metric) {
+    $bootstrapClass = $metric[3];
+    $chartColors[$key] = $colorMap[$bootstrapClass] ?? '#4CAF50';
+}
+?>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     const miniCharts = {};
     const chartData = <?php echo json_encode($chartData); ?>;
+    const chartColors = <?php echo json_encode($chartColors); ?>;
 
-    function createMiniChart(canvasId, dataPoints, label) {
+    function createMiniChart(canvasId, dataPoints, label, color) {
         const ctx = document.getElementById(canvasId).getContext('2d');
 
         if (miniCharts[canvasId]) {
@@ -148,8 +181,8 @@
                 datasets: [{
                     label: label,
                     data: dataPoints,
-                    borderColor: '#4CAF50',
-                    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                    borderColor: color,
+                    backgroundColor: color + '20',
                     borderWidth: 1.5,
                     tension: 0.4,
                     pointRadius: 0,
@@ -176,7 +209,7 @@
     Object.keys(chartData).forEach(param => {
         const canvasId = 'chart-' + param;
         if (document.getElementById(canvasId)) {
-            createMiniChart(canvasId, chartData[param], param);
+            createMiniChart(canvasId, chartData[param], param, chartColors[param]);
         }
     });
 </script>

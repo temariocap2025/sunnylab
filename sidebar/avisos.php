@@ -1,6 +1,13 @@
 <?php
 $account = $_GET['account'];
 
+$names = [
+    'colegiocapouilliez' => 'Colegio Capouilliez',
+    'conredgt' => 'CONRED',
+    'mineducgt' => 'MINEDUC',
+    'tn23noticias' => 'TN23'
+];
+
 if ($account) {
     $sql = "SELECT post_id FROM instagram WHERE poster_name='$account' ORDER BY id_instagram DESC";
     $result = mysqli_query($connect, $sql);
@@ -21,7 +28,9 @@ if ($account) {
         echo '<div class="account-buttons">';
         while ($row = mysqli_fetch_assoc($result)) {
             $name = htmlspecialchars($row['poster_name']);
-            echo '<a href="?seccion=avisos&account='.$name.'"><button>'.$name.'</button></a> ';
+            if($name || ""){
+                echo '<a href="?seccion=avisos&account='.$name.'" class="avisos-button">'.$names[$name].'</a> '; ?> <br> <?php
+            }
         }
         echo '</div>';
     }else {

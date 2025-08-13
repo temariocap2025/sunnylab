@@ -6,9 +6,10 @@ include("conexion.php");
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <title>SunnyLab Temario de Tecnología Capouilliez</title>
+    <title>SunnyLab</title>
     <link rel="stylesheet" href="styles.css">
-    <?php if (isset($_GET['seccion']) && $_GET['seccion'] === 'resumen'): ?>
+    <link rel="icon" type="image/x-icon" href="/favicon.png">
+    <?php if (isset($_GET['seccion']) && $_GET['seccion'] === 'resumen' || $_GET['seccion'] === 'calendario'): ?>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <?php endif; ?>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -19,9 +20,9 @@ include("conexion.php");
             <button  class="open-sidebar" onclick="openNav()">&#9776;</button>
             <div class="main-logo">
                 <h1 class="main-title">SunnyLab</h1>
-                <p class="main-subtitle">Temario de Tecnología Capouilliez 2025</p>
+                <p class="main-subtitle">Temario de Tecnología Capouilliez</p>
             </div>
-            <a class="login" href="login.php"><img class="capo-logo" src="logo.png"></a>
+            <a class="login" href="login.php"><img class="capo-logo" src="logo.svg"></a>
         </header>
 
         <div class="main-layout">
@@ -44,15 +45,16 @@ include("conexion.php");
                         <span class="nav-icon">🛡️</span>
                         Recomendaciones
                     </a></li>
+                    <?php if(isset($_COOKIE['loggedin'])){?>
+                    <li><a href="?seccion=coor-recomendaciones" class="nav-item <?php echo (isset($_GET['seccion']) && $_GET['seccion'] == 'coor-recomendaciones') ? 'active' : ''; ?>">
+                        <span class="nav-icon">❔</span>
+                        Recomendaciones para Coordinadores
+                    </a></li>
+                    <?php }?>
                     <li><a href="?seccion=avisos" class="nav-item <?php echo (isset($_GET['seccion']) && $_GET['seccion'] == 'avisos') ? 'active' : ''; ?>">
                         <span class="nav-icon">🔔</span>
                         Avisos
                     </a></li>
-                    <?php if(isset($_COOKIE['loggedin'])){?>
-                    <li><a href="?seccion=test" class="nav-item <?php echo (isset($_GET['seccion']) && $_GET['seccion'] == 'test') ? 'active' : ''; ?>">
-                        TEST
-                    </a></li>
-                    <?php }?>
                 </ul>
             </nav>
 
@@ -70,8 +72,8 @@ include("conexion.php");
     <!-- <script 
     disable-devtool-auto 
     disable-menu='false'
-    src='https://cdn.jsdelivr.net/npm/disable-devtool'></script>
-    </div> -->
+    src='https://cdn.jsdelivr.net/npm/disable-devtool'></script> -->
+    </div>
     <script>
         setInterval(function() {
         location.reload();
