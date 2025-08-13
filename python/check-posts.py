@@ -12,6 +12,7 @@ import pymysql
 import json
 import tempfile
 from datetime import datetime
+from pathlib import Path
 
 USERS = ["colegiocapouilliez", "mineducgt", "tn23noticias", "conredgt"]
 prompt = 'Este video o imagen habla específicamente sobre un tema ambiental relacionado con Guatemala? o suspensión de clases? (Desastres naturales, radiación UV, calidad del aire, temperatura, humedad, o recomendaciones sobre estos temas). Responde con un 1 o un 0 únicamente (temas prohibidos: Drogas, casos de otros países que no involucran Guatemala)'
@@ -31,9 +32,12 @@ driver = webdriver.Chrome(service=service, options=chrome_options)
 
 config_path = "/home/temario/.config/gallery-dl/config.json"
 
+with open(f'{Path(__file__).resolve().parents[1]}/apikey.txt') as f:
+    api_key = f.read().strip()
+
 os.environ.pop("GOOGLE_API_BASE_URL", None)
 os.environ.pop("GOOGLE_API_KEY", None)
-client = genai.Client(api_key='AIzaSyD4y3882Q0IZjitGCsxxVMafL4RtU8QNeM')
+client = genai.Client(api_key=api_key)
 
 def refresh_cookie(driver):
     driver.delete_all_cookies()

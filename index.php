@@ -74,10 +74,12 @@ include("conexion.php");
     disable-menu='false'
     src='https://cdn.jsdelivr.net/npm/disable-devtool'></script> -->
     </div>
-    <script>
-        setInterval(function() {
-        location.reload();
-    }, 60000);
-    </script>
+    <?php if (isset($_GET['seccion']) && $_GET['seccion'] === 'resumen' || $_GET['seccion'] === 'calendario'): ?>
+        <script>
+            setInterval(function() {
+            location.reload();
+        }, 60000);
+        </script>
+    <?php endif; ?>
 </body>
 </html>

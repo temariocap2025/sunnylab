@@ -26,6 +26,8 @@ function getDailyAverages($connect, $year, $month, $day) {
 }
 
 date_default_timezone_set("America/Guatemala");
+
+$api_key = trim(file_get_contents('apikey.txt'));
 ?>
 
 <div class="advices-alumnos">
@@ -37,13 +39,18 @@ date_default_timezone_set("America/Guatemala");
         use GeminiAPI\Resources\ModelName;
         use GeminiAPI\Resources\Parts\TextPart;
 
-        $client = new Client('AIzaSyD4y3882Q0IZjitGCsxxVMafL4RtU8QNeM');
+        $client = new Client($api_key);
         $response = $client->withV1BetaVersion()
             ->generativeModel(ModelName::GEMINI_1_5_FLASH)
-            ->withSystemInstruction('Estás dandole recomendaciones a un coordinador de un colegio a base de unos valores ambientales de una base de datos, 
+            ->withSystemInstruction('Estás dandole recomendaciones a un coordinador de un colegio a base del promedio de valores ambientales de una base de datos del presente día,
+            no des detalles técnicos ya que es parte de un proyecto de tesis, 
             aparecerá en una página web dentro de un div por lo que tienes la libertad de usar etiquetas html, 
             el título tendrá que contener esto: font-size: 2rem; font-weight: bold; color: #2563eb; 
-            No lo hagas tan largo pero tampoco tan corto.')
+            No lo hagas tan largo pero tampoco tan corto,
+            Empieza el mensaje después del título con algo cercano a: "Estimado coordinador, a continuación, se presentan algunas recomendaciones basadas 
+            en el promedio de datos ambientales recopilados el día de hoy. Estos datos fueron procesados por una IA y reflejan las condiciones generales.
+            Tenga en cuenta que se trata de valores promedios y las condiciones pueden variar a lo largo del día. "
+            Trata de no escribir ```html```')
             ->generateContent(
                 new TextPart(json_encode(getDailyAverages($connect, date('Y'), date('m'), date('d')))),
             );
