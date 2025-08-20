@@ -3,7 +3,7 @@
         <h2 class="advices-alumnos-title">Recomendaciones para protegernos del sol</h2>
     </div>
     
-    <div style="font-size: 1.1rem; line-height: 1.6; color: #374151; margin-bottom: 2rem;">
+    <div style="font-size: 1.1rem; line-height: 1.6; color: #374151; margin-bottom: 2rem; text-align: justify;">
         1. <strong>Revisa el semáforo todos los días</strong><br>
         Antes de salir al recreo o a realizar actividades al aire libre, revisa el semáforo para saber el nivel de radiación UV.
         <div style="margin-top: 0; padding-top: 0; line-height: 1.6;">

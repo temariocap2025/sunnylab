@@ -28,7 +28,7 @@ if ($account) {
         echo '<div class="account-buttons">';
         while ($row = mysqli_fetch_assoc($result)) {
             $name = htmlspecialchars($row['poster_name']);
-            if($name || ""){
+            if($name){
                 echo '<a href="?seccion=avisos&account='.$name.'" class="avisos-button">'.$names[$name].'</a> '; ?> <br> <?php
             }
         }

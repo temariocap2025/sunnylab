@@ -1,5 +1,5 @@
 <div class="container-fluid dashboard-container">
-    <h1 class="section-title" style="color:#333">
+    <h1 class="section-title" style="color:#3D3D3D">
         <i class="fas fa-leaf me-3"></i>
         Panel de Monitoreo Ambiental
     </h1>
@@ -94,11 +94,9 @@
         'co2' => ['CO2', $co2 . ' ppm', 'fas fa-smog', 'text-secondary', 'Dióxido de Carbono', '', 'chart-co2'],
         'co' => ['CO', $co . ' ppm', 'fas fa-cloud', 'text-dark', 'Monóxido de Carbono', '', 'chart-co'],
         'no2' => ['NO2', $no2 . ' ppb', 'fas fa-wind', 'text-info', 'Dióxido de Nitrógeno', '', 'chart-no2'],
-        'o3' => ['O2', $o3 . ' ppb', 'fas fa-atom', 'text-success', 'Ozono', '', 'chart-o3'],
-        'covs' => ['COVs', $covs . ' ppb', 'fas fa-flask', 'text-warning', 'Compuestos Orgánicos', '', 'chart-covs'],
         'pm1_0' => ['PM1.0', $pm1_0 . ' ug/m3', 'fas fa-circle', 'text-muted', 'Partículas Finas', '', 'chart-pm1_0'],
         'pm2_5' => ['PM2.5', $pm2_5 . ' ug/m3', 'fas fa-dot-circle', 'text-danger', 'Partículas Respirables', '', 'chart-pm2_5'],
-        'pm10' => ['PM10', $pm10 . ' ug/m3', 'fas fa-circle-notch', 'text-primary', 'Partículas Inhalables', 'mx-auto', 'chart-pm10']
+        'pm10' => ['PM10', $pm10 . ' ug/m3', 'fas fa-circle-notch', 'text-primary', 'Partículas Inhalables', '', 'chart-pm10']
     ];
     ?>
 

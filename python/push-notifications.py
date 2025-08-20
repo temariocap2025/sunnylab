@@ -27,8 +27,8 @@ name = {
     "ica_index": "Contaminación de Aire"
 }
 channel_id = {
-    "uv_index": "a9ef2772-565b-469e-b171-4501108c562a",
-    "ica_index": "a9ef2772-565b-469e-b171-4501108c562a"
+    "uv_index": "4f184e39-f85e-4865-8b49-7ab15e85991b",
+    "ica_index": "94a07574-c50f-4b1f-bc48-ea5a279aee8e"
 }
 
 while True:
@@ -55,6 +55,9 @@ while True:
                             api_response = api_instance.create_notification(notification)
                             pprint(api_response)
                             state[value] = True
+                            time.sleep(6)
                         except onesignal.ApiException as e:
                             print("No se pudo enviar la notificación: %s\n" % e)
-    time.sleep(10)
+                elif value in data and data[value] < high_values[value]:
+                    state[value] = False
+    time.sleep(1)
