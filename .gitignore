@@ -1,5 +1,4 @@
 python/venv
 python/gallery-dl
 python/__pycache__
-/vendor/
-apikey.txt
+esp32serial.log
