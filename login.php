@@ -1,6 +1,48 @@
 <?php
+$correct_user = "temario"; // valores hardcodeados (pueden mantenerse)
+$correct_pass = "temario";
+$error = 0;
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $user = trim($_POST["username"]);
+    $pass = trim($_POST["password"]);
+
+    // Conexión a la base de datos
+    $host = "localhost";
+    $db = "db_solmaforo";
+    $user_db = "root";
+    $pass_db = "";
+
+    $conn = new mysqli($host, $user_db, $pass_db, $db);
+    if ($conn->connect_error) {
+        die("Conexión fallida: " . $conn->connect_error);
+    }
+
+    // Consulta segura usando la tabla login
+    $sql = "SELECT * FROM login WHERE username=? AND password=?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ss", $user, $pass);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    // Si encuentra un usuario, login correcto
+    if ($result->num_rows === 1) {
+        setcookie("loggedin", "yes");
+        header("Location: index.php");
+        exit;
+    } else {
+        $error = 1; // login incorrecto
+    }
+
+    $stmt->close();
+    $conn->close();
+}
+?>
+
+<?php
 $correct_user = "temario";
 $correct_pass = "temario";
+$error = 0;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $user = $_POST["username"];
